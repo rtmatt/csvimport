@@ -2,6 +2,6 @@
 
 return [
     'import_order'=>[],
-    'auth'=>true,
+    'auth'=>false,
     'sql_directory'=>'/data'
 ];

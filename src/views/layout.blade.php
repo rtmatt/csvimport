@@ -8,7 +8,6 @@
     <meta name="robots" content="noindex,nofollow"/>
 </head>
 <body>
-<h1>Import Tools</h1>
 <div>
     @if(Session::has('flash_message'))
         <div class="alert alert-success alert-dismissable">

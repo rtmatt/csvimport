@@ -15,5 +15,10 @@
   },
   "require": {
     "php": ">=5.5.9"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "php artisan vendor:publish"
+    ]
   }
 }

@@ -1,5 +1,6 @@
 @extends($layout)
 @section('content')
+    <h1>Import CSV Content</h1>
     <div class="imports-index">
         {!!Form::open(['files'=>'true','class' => 'form-horizontal'])!!}
         @foreach($fields as $field)
