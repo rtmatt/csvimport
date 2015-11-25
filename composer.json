@@ -1,0 +1,19 @@
+{
+  "name": "rtmatt/csvimport",
+  "description": "Tool For quickly creating csv import tools",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Matt",
+      "email": "matt@redtrainwebservices.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "RTMatt\\CSVImport\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=5.5.9"
+  }
+}
