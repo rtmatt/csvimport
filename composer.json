@@ -18,7 +18,8 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "php artisan vendor:publish"
+      "php artisan vendor:publish",
+      "php artisan route:clear"
     ]
   }
 }

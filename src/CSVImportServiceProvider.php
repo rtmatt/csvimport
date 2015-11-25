@@ -18,6 +18,9 @@ class CSVImportServiceProvider extends ServiceProvider
             __DIR__.'/config/csvimport.php' => config_path('csvimport.php'),
             __DIR__.'/CSVImports' => app_path()
         ]);
+        
+        require __DIR__.'/routes/routes.php';
+        
     }
 
     /**
