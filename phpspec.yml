@@ -1,0 +1,5 @@
+suites:
+  rtmatt_suite:
+    namespace: RTMatt\CSVImport
+    psr4_prefix: RTMatt\CSVImport\
+    src_path: src
