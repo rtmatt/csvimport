@@ -17,9 +17,8 @@
     "php": ">=5.5.9"
   },
   "scripts": {
-    "pre-install-cmd": [
-      "php artisan vendor:publish",
-      "php artisan route:clear"
+    "post-install-cmd": [
+      "php artisan vendor:publish --provider=\"RTMatt\CSVImport\CSVImportServiceProvider\""
     ]
   }
 }

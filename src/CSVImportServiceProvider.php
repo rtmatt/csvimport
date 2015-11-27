@@ -16,7 +16,7 @@ class CSVImportServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/views', 'csvimport');
         $this->publishes([
             __DIR__.'/config/csvimport.php' => config_path('csvimport.php'),
-            __DIR__.'/CSVImports' => app_path()
+            __DIR__.'/Publish' => app_path()
         ]);
         
         require __DIR__.'/routes/routes.php';
