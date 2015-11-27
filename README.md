@@ -1,6 +1,8 @@
-- [ ] Complete basic documentation
-- [ ] Write and run phpunit tests
-- [ ] make artisan command to make new import
+- [ ] Complete Documentation
+- [ ] Acceptance Tests [?]
+- [ ] Unit Tests
+- [ ] Add artisan command
+- [ ] Don't require order
 
 
 # csvimport
@@ -31,13 +33,13 @@ RTMatt\CSVImport\CSVImportServiceProvider::class,
 If you would like to leverage automatic routing, make sure to add the above before the application routing service provider:
 
 ``` php 
-//[...]
+// [...]
  RTMatt\CSVImport\CSVImportServiceProvider::class,
   /*
   * Application Service Providers...
   */
  App\Providers\AppServiceProvider::class,
- //[...]
+ // [...]
 
 ```
 
@@ -55,9 +57,9 @@ In your routes.php file, manually define the route you would like to use (make s
 
 ``` php
  
-//[...]
+// [...]
 Route::controller([your route here],'\RTMatt\CSVImport\CSVImportController');
-//[...]
+// [...]
 
 ```
 
