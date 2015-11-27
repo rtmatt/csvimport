@@ -103,4 +103,61 @@ Add a new file to `app/CSVImports` with the name of [ResourceName]Importer.php.
 	* Navigate to the route of your importer (either /csv-imports  or the custom route you defined earlier);
 	* Fill out the form and be done.
   
+  ## Configuration
+  You can configure the importer by modifying `config/csvimport.php`.  
+  
+  ``` php 
+  
+  <?php
+  
+  return [
+      'import_order'=>[],
+      'auth'=>false,
+      'sql_directory'=>'/data'
+  ];
+  
+  ```
+  
+  ### Import Order
+  By default, CSVImporter will run multiple imports in a randomized order. 
+  
+  If your imports must be run in a certain order, you can configure the order in which they run. Simply add an array with keys that are the importer name in  snake_case with "Importer" removed, eg `AdminUsersImporter=>admin_users` and a value of the 0-based order in which it should run.
+  
+  For example, if you have a UserTypesImporter and a UsersImporter that need to run in that order, your config file will look like:
+  
+  ``` php 
+  
+  // ..
+	import_order'=>[
+		'user_types'=>0,
+		'users'=>1
+	],
+  // ..
+  ```
+  
+  ### Authentication
+  If you would like to restrict access to the import area, simply change the auth config to `true`.  You will need to add a method  your User model containing your autentication logic.
+  
+  ``` php 
+  
+  public function can_import(){
+	 // your authentication logic here
+  }
+  
+  ```
+  ### SQL Directory
+  The CSVImporter moves uploaded CSV files to a directory the mysql user can read from.  By default, CSVImporter will try to use the directory "/data"
+   You can easily change this to your preferred directory by modifying this config. 
+  
+  
+  
+
+  
+  
+  
+  
+## Advanced Usage
+If you have a long list of imports to run and some depend on others, you can define the order in which they run. In `config/csvimport.php`, modify the import_order array with the your importer name in snake_case with "Importer" removed, eg `AdminUsersImporter=>admin_users`
+
+
   
