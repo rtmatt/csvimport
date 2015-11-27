@@ -63,22 +63,44 @@ Route::controller([your route here],'\RTMatt\CSVImport\CSVImportController');
 
 ```
 
+## Basic Usage
+### Set Up Importer
+Add a new file to `app/CSVImports` with the name of [ResourceName]Importer.php.  
+  
+  ``` php 
+  
+  <?php
+  
+  namespace App\CSVImports;
+  
+  use RTMatt\CSVImport\CSVImporter;
+  
+  class YourResourceNameImporter extends CSVImporter {
+  
+      protected function setResourceName()
+      {
+          return "resource_names";
+      }
+ 
+      protected function setTableName()
+      {
+          return "resource_names";
+      }
+  
 
-### Publish Vendor Directories - TODO - this is automated via composer install.  
-In order for the package to work properly, you will need certain folders in your app directory.  This is automated by running the following:
-
-``` bash 
-
-$ php artisan vendor:publish --provider="RTMatt\CSVImport\CSVImportServiceProvider"
-
-```
-
-If you have previously done this and would like to overwrite previous files, add the --force switch:
-``` bash 
-
-$ php artisan vendor:publish  --provider="RTMatt\CSVImport\CSVImportServiceProvider" --force
-
-```
-
-## Usage
-
+      protected function setFieldString()
+      {
+          return "name,image,website_link,description";
+      }
+  }
+  
+  ```
+ * setResourceName - this is largely arbitraty and will likely be removed in future versions
+ * setTableName - this needs to match the database table you will be importing into
+ * setFieldString - comma separated list of the database columns that correspond to the columns in your csv file. 
+ 
+### Run Imports
+	* Navigate to the route of your importer (either /csv-imports  or the custom route you defined earlier);
+	* Fill out the form and be done.
+  
+  
