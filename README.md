@@ -3,14 +3,19 @@
 - [ ] Unit Tests
 - [ ] Custom Route Config
 - [ ] Add artisan command
-- [ ] Don't require order
+
 
 
 # csvimport
 CSV Import Tool
 
 ##Features
-* Automatically extends admin layout (resources/views/layouts/admin.blade.php)  if present.
+* Imports single or multiple .csv files into mysql database
+* Optional User Authorization
+* Ready to Roll Out of the Box
+* Configurable Views, URLs and Directories
+* Ability to Define Import Order 
+
 
 ## Installation
 ### Install Package
@@ -21,13 +26,26 @@ $ composer require rtmatt/csvimport
 ```
 
 ### Add Service Provider
-In app/config.php, add the following to the providers list:
+In app/config.php, add the following to the providers list ABOVE the application Route Service Provider
 
 ```  php
-
+//    [...]
 RTMatt\CSVImport\CSVImportServiceProvider::class,
+//    [...]
+App\Providers\RouteServiceProvider::class,
 
 ```
+
+### Publish Dependencies
+
+``` bash 
+
+$ php artisan vendor:publish --provider="RTMatt\CSVImport\CSVImportServiceProvider"
+
+```
+
+
+
 ### Routing
 
 #### Option 1 - Automatic 
