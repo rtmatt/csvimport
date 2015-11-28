@@ -11,7 +11,7 @@
                     </label>
                     <div class="col-sm-10">
                         <div class="form-control-static">
-                            <input type="file" name="{{$field}}"/>
+                            <input type="file" name="{{$field}}">
                         </div>
                     </div>
                 </fieldset>
