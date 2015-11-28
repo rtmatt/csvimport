@@ -16,6 +16,10 @@ class CSVImportDirectoryReaderSpec extends ObjectBehavior
     }
 
 
+    public function it_throws_exception_when_directory_does_not_exist(){
+        
+    }
+
     public function it_gets_correct_set_of_files_from_directory()
     {
         CSVImportDirectoryTestHelper::clearDirectory(__DIR__ . '/testImportDirectory');
