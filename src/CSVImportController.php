@@ -6,6 +6,9 @@ use Illuminate\Routing\Controller;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use RTMatt\CSVImport\Exceptions\CSVImporterNotFoundException;
+use RTMatt\CSVImport\Exceptions\CSVImportInvalidLayoutException;
+use RTMatt\CSVImport\Exceptions\CSVIncompatibleUserException;
 
 class CSVImportController extends Controller
 {
@@ -17,8 +20,6 @@ class CSVImportController extends Controller
 
     public function __construct()
     {
-
-
         if (config('csvimport.auth')) {
             $this->authorizeUser();
         }
@@ -33,9 +34,18 @@ class CSVImportController extends Controller
      */
     public function getIndex()
     {
-        $raw_fields = $this->getAvailableImporters();
+        try{
+            $raw_fields = $this->getAvailableImporters();
+        }catch(\ErrorException $e){
+    //TODO: make more specific exception
+            $raw_fields = [];
+        }
+
         $fields = $this->translateImporterFields($raw_fields);
         $layout = 'csvimport::layout';
+        if($layout_override = config('csvimport.override_layout_view')){
+            $layout = $this->validateLayoutOverride($layout_override);
+        }
         if (\File::exists(base_path('resources/views/layouts/admin.blade.php'))) {
             $layout = 'layouts.admin';
         }
@@ -55,15 +65,14 @@ class CSVImportController extends Controller
     {
         $import_manager = new CSVImportManager(config('csvimport.import_order'));
         foreach ($request->file() as $key => $csv) {
-            $importer_identifier = "\\App\\CSVImports\\" . studly_case($key) . "Importer";
+            $importer_identifier = config('csvimport.importer_namespace') . studly_case($key) . "Importer";
             if ( ! class_exists($importer_identifier)) {
-                return redirect()->back()->withErrors($importer_identifier . " does not exist");
+                throw new CSVImporterNotFoundException("Class ". $importer_identifier . " does not exist");
             }
             $importer = new $importer_identifier($csv);
             $import_manager->queue($importer, $key);
         }
         $message = $import_manager->run();
-
         if ($message != '') {
             return redirect()->back()->with([ 'flash_message' => $message ]);
         } else {
@@ -72,23 +81,11 @@ class CSVImportController extends Controller
 
     }
 
-
-    /**
-     * @return array
-     */
-    protected function getDefinedImporterFields()
-    {
-
-        $fields         = [ ];
-
-    }
-
-
     protected function authorizeUser()
     {
-        $user = \Auth::user();
+        $user = $this->getCurrentUser();
         if(!method_exists($user, 'can_import')){
-            throw new CSVIncompatableUserException('Incompatable user model.  can_import method needs to be defined');
+            throw new CSVIncompatibleUserException('Incompatible user model.  can_import method needs to be defined');
         }
         if ($user->can_import()) {
             return;
@@ -97,10 +94,11 @@ class CSVImportController extends Controller
     }
 
 
+
+
     protected function getAvailableImporters()
     {
-        $directory      = app_path('CSVImports');
-
+        $directory      = config('csvimport.importer_directory');
         return CSVImportDirectoryReader::readDirectory($directory);
 
     }
@@ -115,6 +113,28 @@ class CSVImportController extends Controller
         }
 
         return $fields;
+
+    }
+
+
+    /**
+     * @return mixed
+     */
+    protected function getCurrentUser()
+    {
+        return \Auth::user();
+    }
+
+
+    private function validateLayoutOverride($layout_override)
+    {
+        $base_path = base_path('resources/views/');
+
+        $override_path = $base_path.str_replace('.','/',$layout_override).'.blade.php';
+        if(!\File::exists($override_path)){
+            throw new CSVImportInvalidLayoutException('Layout override file does not exist');
+        }
+        return $layout_override;
 
     }
 
