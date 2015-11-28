@@ -1,6 +1,7 @@
 - [ ] Complete Documentation
 - [ ] Acceptance Tests [?]
 - [ ] Unit Tests
+- [ ] Custom Route Config
 - [ ] Add artisan command
 - [ ] Don't require order
 
