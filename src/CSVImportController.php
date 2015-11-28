@@ -1,14 +1,24 @@
 <?php
 namespace RTMatt\CSVImport;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class CSVImportController extends Controller
 {
 
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    protected $config;
+
+
     public function __construct()
     {
+
+
         if (config('csvimport.auth')) {
             $this->authorizeUser();
         }
@@ -23,7 +33,8 @@ class CSVImportController extends Controller
      */
     public function getIndex()
     {
-        $fields = $this->getDefinedImporterFields();
+        $raw_fields = $this->getAvailableImporters();
+        $fields = $this->translateImporterFields($raw_fields);
         $layout = 'csvimport::layout';
         if (\File::exists(base_path('resources/views/layouts/admin.blade.php'))) {
             $layout = 'layouts.admin';
@@ -67,16 +78,9 @@ class CSVImportController extends Controller
      */
     protected function getDefinedImporterFields()
     {
-        $directory      = app_path('CSVImports');
-        $importer_files = array_diff(scandir($directory), [ '.', '..' ,'.gitkeep']);
+
         $fields         = [ ];
-        foreach ($importer_files as $importerName) {
-            $clean_name = str_ireplace('Importer.php', '', $importerName);
-            $fields[]   = snake_case($clean_name);
 
-        }
-
-        return $fields;
     }
 
 
@@ -91,4 +95,27 @@ class CSVImportController extends Controller
         }
         abort(401, 'Unauthorized action.');
     }
+
+
+    protected function getAvailableImporters()
+    {
+        $directory      = app_path('CSVImports');
+
+        return CSVImportDirectoryReader::readDirectory($directory);
+
+    }
+
+
+    private function translateImporterFields($raw_fields)
+    {
+        $fields = [];
+        foreach ($raw_fields as $importerName) {
+            $clean_name = str_ireplace('Importer.php', '', $importerName);
+            $fields[]   = snake_case($clean_name);
+        }
+
+        return $fields;
+
+    }
+
 }

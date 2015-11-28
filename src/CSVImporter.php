@@ -24,7 +24,7 @@ abstract class CSVImporter
     }
 
 
-    public function import($message)
+    public function import()
     {
 
         $this->processCSVFile();
@@ -35,11 +35,13 @@ abstract class CSVImporter
 
         $this->postSQLImport();
 
-        return $this->prepareMessage($message);
+        $this->deleteSQLPathCSV();
+
+        return $this->prepareMessage();
     }
 
 
-    protected function deletePreExistingCsv()
+    protected function deleteSQLPathCSV()
     {
         if (\File::exists($this->sql_data_path . $this->resource_name . '.csv')) {
             \File::delete($this->sql_data_path . $this->resource_name . '.csv');
@@ -49,14 +51,16 @@ abstract class CSVImporter
 
     protected function resetTable()
     {
-        \DB::table($this->table_name)->delete();
+        \DB::statement("SET FOREIGN_KEY_CHECKS = 0;");
+        \DB::table($this->table_name)->truncate();
+        \DB::statement("SET FOREIGN_KEY_CHECKS = 1;");
     }
 
 
     protected function processCSVFile()
     {
-        $this->deletePreExistingCsv();
-        $this->csv->move($this->sql_data_path, '' . $this->resource_name . '.csv');
+        $this->deleteSQLPathCSV();
+        \File::copy($this->csv, $this->sql_data_path . '' . $this->resource_name . '.csv');
     }
 
 
@@ -90,9 +94,9 @@ abstract class CSVImporter
      *
      * @return string
      */
-    protected function prepareMessage($message)
+    protected function prepareMessage()
     {
-        return $message . ' ' . ucwords(str_ireplace('_', ' ', $this->resource_name)) . ' Imported.';
+        return ' ' . ucwords(str_ireplace('_', ' ', $this->resource_name)) . ' Imported.';
     }
 
 
@@ -121,6 +125,5 @@ abstract class CSVImporter
     {
         return false;
     }
-
 
 }
