@@ -1,11 +1,11 @@
 <?php
 namespace RTMatt\CSVImport;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use RTMatt\CSVImport\Exceptions\CSVImporterNotFoundException;
 use RTMatt\CSVImport\Exceptions\CSVImportInvalidLayoutException;
 use RTMatt\CSVImport\Exceptions\CSVIncompatibleUserException;
@@ -34,21 +34,23 @@ class CSVImportController extends Controller
      */
     public function getIndex()
     {
-        try{
-            $raw_fields = $this->getAvailableImporters();
-        }catch(\ErrorException $e){
-    //TODO: make more specific exception
-            $raw_fields = [];
-        }
 
-        $fields = $this->translateImporterFields($raw_fields);
         $layout = 'csvimport::layout';
-        if($layout_override = config('csvimport.override_layout_view')){
+        if ($layout_override = config('csvimport.override_layout_view')) {
             $layout = $this->validateLayoutOverride($layout_override);
         }
         if (\File::exists(base_path('resources/views/layouts/admin.blade.php'))) {
             $layout = 'layouts.admin';
         }
+
+        try {
+            $raw_fields = $this->getAvailableImporters();
+        } catch (\RTMatt\CSVImport\Exceptions\CSVDirectoryNotFoundExcepton $e) {
+            $fields = [ ];
+            return view('csvimport::index', compact('fields', 'layout'))->withErrors($e->getMessage());
+        }
+
+        $fields = $this->translateImporterFields($raw_fields);
 
         return view('csvimport::index', compact('fields', 'layout'));
     }
@@ -67,7 +69,7 @@ class CSVImportController extends Controller
         foreach ($request->file() as $key => $csv) {
             $importer_identifier = config('csvimport.importer_namespace') . studly_case($key) . "Importer";
             if ( ! class_exists($importer_identifier)) {
-                throw new CSVImporterNotFoundException("Class ". $importer_identifier . " does not exist");
+                throw new CSVImporterNotFoundException("Class " . $importer_identifier . " does not exist");
             }
             $importer = new $importer_identifier($csv);
             $import_manager->queue($importer, $key);
@@ -81,10 +83,11 @@ class CSVImportController extends Controller
 
     }
 
+
     protected function authorizeUser()
     {
         $user = $this->getCurrentUser();
-        if(!method_exists($user, 'can_import')){
+        if ( ! method_exists($user, 'can_import')) {
             throw new CSVIncompatibleUserException('Incompatible user model.  can_import method needs to be defined');
         }
         if ($user->can_import()) {
@@ -94,11 +97,10 @@ class CSVImportController extends Controller
     }
 
 
-
-
     protected function getAvailableImporters()
     {
-        $directory      = config('csvimport.importer_directory');
+        $directory = config('csvimport.importer_directory');
+
         return CSVImportDirectoryReader::readDirectory($directory);
 
     }
@@ -106,7 +108,7 @@ class CSVImportController extends Controller
 
     private function translateImporterFields($raw_fields)
     {
-        $fields = [];
+        $fields = [ ];
         foreach ($raw_fields as $importerName) {
             $clean_name = str_ireplace('Importer.php', '', $importerName);
             $fields[]   = snake_case($clean_name);
@@ -130,10 +132,11 @@ class CSVImportController extends Controller
     {
         $base_path = base_path('resources/views/');
 
-        $override_path = $base_path.str_replace('.','/',$layout_override).'.blade.php';
-        if(!\File::exists($override_path)){
+        $override_path = $base_path . str_replace('.', '/', $layout_override) . '.blade.php';
+        if ( ! \File::exists($override_path)) {
             throw new CSVImportInvalidLayoutException('Layout override file does not exist');
         }
+
         return $layout_override;
 
     }

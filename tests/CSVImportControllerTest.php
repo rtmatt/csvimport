@@ -58,12 +58,13 @@ class CSVImportControllerTest extends \RTMatt\CSVImport\Tests\TestCase
 
 
     /** @test */
-    public function it_loads_empty_page_when_directory_does_not_exist()
+    public function it_loads_empty_page_and_displays_error_when_directory_does_not_exist()
     {
         \Config::set('csvimport.importer_directory', __DIR__ . '/importeasdfasdfrs/');
         $this->call('GET', 'csv-import');
         $this->assertResponseOk();
         $this->assertViewHas('fields', [ ]);
+       $this->assertContains('Import Directory Does Not Exist',$this->response->original->render());
     }
 
 
