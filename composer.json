@@ -32,7 +32,8 @@
       "php artisan clear-compiled"
     ],
     "post-package-update": [
-      "php artisan optimize"
+      "php artisan optimize",
+      "php artisan vendor:publish --provider=\"RTMatt\\CSVImport\\CSVImportServiceProvider\""
     ]
   }
 }
