@@ -26,7 +26,7 @@
     "post-package-install": [
       "php artisan clear-compiled",
       "php artisan optimize",
-      "php artisan vendor:publish --provider="\RTMatt\CSVImport\CSVImportServiceProvider\""
+      "php artisan vendor:publish --provider=\"RTMatt\CSVImport\CSVImportServiceProvider\""
     ],
     "pre-package-update": [
       "php artisan clear-compiled"
