@@ -10,15 +10,16 @@
   ],
   "autoload": {
     "psr-4": {
-      "RTMatt\\CSVImport\\": "src/"
+      "RTMatt\\CSVImport\\": "src/",
+      "RTMatt\\CSVImport\\Tests\\": "tests/"
     }
   },
   "require": {
     "php": ">=5.5.9"
   },
-  "scripts": {
-    "post-install-cmd": [
-      "php artisan vendor:publish --provider=\"RTMatt\CSVImport\CSVImportServiceProvider\""
-    ]
+  "require-dev": {
+    "phpunit/phpunit": "~4.0",
+    "phpspec/phpspec": "~2.1",
+    "orchestra/testbench": "~3.0"
   }
 }
