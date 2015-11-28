@@ -8,11 +8,16 @@
 
 namespace RTMatt\CSVImport;
 
+use RTMatt\CSVImport\Exceptions\CSVDirectoryNotFoundExcepton;
+
 class CSVImportDirectoryReader
 {
 
     public static function readDirectory($directory)
     {
+        if(!realpath($directory)){
+            throw new CSVDirectoryNotFoundExcepton ('Import Directory Does Not Exist at ' . $directory);
+        }
         $all_files      = array_diff(scandir($directory), [ '.', '..', '.gitkeep' ]);
         $importer_files = array_filter($all_files, function ($file) {
             $split = explode('Importer.php', $file);

@@ -17,7 +17,7 @@ class CSVImportDirectoryReaderSpec extends ObjectBehavior
 
 
     public function it_throws_exception_when_directory_does_not_exist(){
-        
+        $this->shouldThrow('\RTMatt\CSVImport\Exceptions\CSVDirectoryNotFoundExcepton')->duringReadDirectory('nonsense');
     }
 
     public function it_gets_correct_set_of_files_from_directory()
