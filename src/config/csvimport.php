@@ -1,5 +1,4 @@
 <?php
-//@todo: Add concrete importer config directry
 return [
     'import_order'=>[],
     'auth'=>false,
