@@ -16,7 +16,12 @@ CSV Import Tool
 * Configurable Views, URLs and Directories
 * Ability to Define Import Order 
 
-
+## Prerequisites
+* Laravel 5 project
+* MYSQL database
+* Folder on your system readable by mysql user (this can be configured, but "/data/" is used by default).
+* Existing database table(s) with defined schema.
+ 
 ## Installation
 ### Install Package
 
@@ -36,6 +41,15 @@ App\Providers\RouteServiceProvider::class,
 
 ```
 
+If your routes are cached, make sure to clear the route cache.
+
+
+``` bash 
+
+$ php artisan route:clear
+
+```
+
 ### Publish Dependencies
 
 ``` bash 
@@ -44,6 +58,61 @@ $ php artisan vendor:publish --provider="RTMatt\CSVImport\CSVImportServiceProvid
 
 ```
 
+## Usage
+### Set Up Importer
+Add a new file to `app/CSVImports` with the name of [ResourceName]Importer.php.  
+  
+  ``` php 
+  
+  <?php
+  
+  namespace App\CSVImports;
+  
+  use RTMatt\CSVImport\CSVImporter;
+  
+  class YourResourceNameImporter extends CSVImporter {
+  
+      protected function setResourceName()
+      {
+          return "resource_names";
+      }
+ 
+      protected function setTableName()
+      {
+          return "resource_names";
+      }
+  
+
+      protected function setFieldString()
+      {
+          return "name,image,website_link,description";
+      }
+  }
+  
+  ```
+ * setResourceName - this defines field labels and messages created by the package
+ * setTableName - this needs to match the database table you will be importing into
+ * setFieldString - comma separated list of the database columns that correspond to the columns in your csv file. 
+
+### Prepare CSV
+CSVImport ignores the first two lines of a .csv file.  Ensure the first two lines of your csv do not contain any information to import. 
+
+### Run Imports
+Navigate to 'csv-import' in your browser.
+  
+Upload your csv in the appropriate input and click submit.
+
+
+
+## Configuration
+When you publish the package dependencies, a file will be created at `config/csvimport.php`
+You can configure various options by changing this file.
+
+### Directory Readable to MYSQL User
+If the absolute path to the folder you have configured for your mysql user is differet than `/data`, change the "sql_directory" option to your folder (do not include trailing slashes).
+
+### Authentication
+If you would like to restrict access to non-authenticated users, change the "auth" option to "true".  You will need to add a public method "can_import" to your user model that contains your authentication logic.
 
 
 ### Routing
@@ -82,42 +151,7 @@ Route::controller([your route here],'\RTMatt\CSVImport\CSVImportController');
 
 ```
 
-## Basic Usage
-### Set Up Importer
-Add a new file to `app/CSVImports` with the name of [ResourceName]Importer.php.  
-  
-  ``` php 
-  
-  <?php
-  
-  namespace App\CSVImports;
-  
-  use RTMatt\CSVImport\CSVImporter;
-  
-  class YourResourceNameImporter extends CSVImporter {
-  
-      protected function setResourceName()
-      {
-          return "resource_names";
-      }
- 
-      protected function setTableName()
-      {
-          return "resource_names";
-      }
-  
 
-      protected function setFieldString()
-      {
-          return "name,image,website_link,description";
-      }
-  }
-  
-  ```
- * setResourceName - this is largely arbitraty and will likely be removed in future versions
- * setTableName - this needs to match the database table you will be importing into
- * setFieldString - comma separated list of the database columns that correspond to the columns in your csv file. 
- 
 ### Run Imports
 	* Navigate to the route of your importer (either /csv-imports  or the custom route you defined earlier);
 	* Fill out the form and be done.

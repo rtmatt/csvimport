@@ -46,6 +46,10 @@ class CSVImportDirectoryReaderSpec extends ObjectBehavior
     }
 
 
+    public function it_ignores_dot_files(){
+        
+    }
+
 }
 
 class CSVImportDirectoryTestHelper
