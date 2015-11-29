@@ -112,7 +112,7 @@ class CSVCreateImporterTest extends TestCase
      */
     protected function callCommand($argument)
     {
-        $test = \Artisan::call('csvimport:create', [
+        $test = \Artisan::call('csvimport:make', [
             'importer' => $argument
         ]);
 

@@ -36,8 +36,8 @@ class CSVImportServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(__DIR__ . '/config/csvimport.php', 'csvimport');
 
-        $this->commands('csvimport:create {importer}');
-        $this->app['csvimport:create {importer}'] = $this->app->share(function ($app) {
+        $this->commands('csvimport:make {importer}');
+        $this->app['csvimport:make {importer}'] = $this->app->share(function ($app) {
             return new CSVCreateImporter;
         });
 

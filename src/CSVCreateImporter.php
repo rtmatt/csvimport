@@ -20,7 +20,7 @@ class CSVCreateImporter extends Command
      *
      * @var string
      */
-    protected $signature = 'csvimport:create {importer}';
+    protected $signature = 'csvimport:make {importer}';
 
     /**
      * The console command description.
@@ -37,7 +37,7 @@ class CSVCreateImporter extends Command
      */
     public function handle()
     {
-        $this->info('Attempting to create importer stub in ' . config('csvimport.importer_directory')."\n");
+        $this->info('Attempting to make importer stub in ' . config('csvimport.importer_directory')."\n");
 
         list( $import_name, $fileName, $path, $full_file_path ) = $this->prepareDependentVariables();
 
