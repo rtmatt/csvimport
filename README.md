@@ -1,5 +1,4 @@
 - [ ] Custom Route Config
-- [ ] Add artisan command
 
 
 
