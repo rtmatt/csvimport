@@ -37,25 +37,34 @@ class CSVCreateImporter extends Command
      */
     public function handle()
     {
+
         $import_name = $this->argument('importer');
 
-        $this->info('Attempting to create importer stub in '.config('csvimport.importer_directory'));
+        $this->info('Attempting to create importer stub in ' . config('csvimport.importer_directory'));
 
         $fileName = studly_case($import_name) . "Importer.php";
 
-        if (\File::exists(config('csvimport.importer_directory') . $fileName)) {
-            throw new CSVImporterExistsError('Importer File Already Exists');
-        }
+        $path = config('csvimport.importer_directory') . '/';
 
-        if ( ! \File::isWritable(config('csvimport.importer_directory'))) {
+        $full_file_path = $path . $fileName;
+
+        $tempfile = tempnam($path, 'tmp');
+        if (strpos($tempfile, '/tmp/') === 0) {
             throw new CSVDirectoryNotWritableException("Importer Directory is not writable");
+
+            return false;
         }
-        $contents = "<?php\n";
+        if (\File::exists($full_file_path)) {
+            throw new CSVImporterExistsError('Importer File Already Exists');
+
+            return false;
+        }
+        unlink($tempfile);
+        $contents = "<?php\n\n";
         $contents .= $this->getFileContents($import_name)->render();
 
-        \File::put(config('csvimport.importer_directory') . $fileName, $contents);
-
-        $this->info($fileName.' created.');
+        $result = file_put_contents($full_file_path, $contents);
+        $this->info($fileName . ' created.');
     }
 
 
@@ -64,7 +73,8 @@ class CSVCreateImporter extends Command
      */
     protected function getFileContents($importer_name)
     {
-        return view("csvimport::importer_stub", compact('importer_name'));
+        $namespace = trim(config('csvimport.importer_namespace'),'\\');
+        return view("csvimport::importer_stub", compact('importer_name','namespace'));
     }
 
 

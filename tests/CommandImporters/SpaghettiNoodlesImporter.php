@@ -1,9 +1,10 @@
+<?php
 
-namespace {{$namespace}};
+namespace App\CSVImports;
 
 use RTMatt\CSVImport\CSVImporter;
 
-class {{studly_case($importer_name)}}Importer extends CSVImporter {
+class SpaghettiNoodlesImporter extends CSVImporter {
 
     protected function setResourceName()
     {
