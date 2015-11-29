@@ -4,6 +4,7 @@
 - [ ] Rollback imports upon error with importer
 - [ ] Report events where unique keys are repeated
 - [ ] Add automatic photo upload support
+- [ ] Clean up and document test storage folders
 
 
 
