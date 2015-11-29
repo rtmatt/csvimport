@@ -8,8 +8,9 @@
 namespace RTMatt\CSVImport\Tests;
 
 use RTMatt\CSVImport\CSVImportController;
+use RTMatt\CSVImport\Tests\TestCase;
 
-class CSVImportControllerTest extends \RTMatt\CSVImport\Tests\TestCase
+class CSVImportControllerTest extends TestCase
 {
 
     /**
