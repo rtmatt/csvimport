@@ -15,5 +15,8 @@
         <testsuite name="Controller">
             <file>./tests/CSVImportControllerTest.php</file>
         </testsuite>
+        <testsuite name="Command">
+            <file>./tests/CSVCreateImporterTest.php</file>
+        </testsuite>
     </testsuites>
 </phpunit>
