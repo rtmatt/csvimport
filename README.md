@@ -4,7 +4,6 @@
 - [ ] Custom Route Config
 - [ ] Add artisan command
 - [ ] Refine auth check to handle instance when user is not logged in at all
-- [ ] 
 
 
 
