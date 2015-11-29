@@ -39,9 +39,6 @@ class CSVImportController extends Controller
         if ($layout_override = config('csvimport.override_layout_view')) {
             $layout = $this->validateLayoutOverride($layout_override);
         }
-        if (\File::exists(base_path('resources/views/layouts/admin.blade.php'))) {
-            $layout = 'layouts.admin';
-        }
 
         try {
             $raw_fields = $this->getAvailableImporters();
