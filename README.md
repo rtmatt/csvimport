@@ -3,6 +3,8 @@
 - [ ] Unit Tests
 - [ ] Custom Route Config
 - [ ] Add artisan command
+- [ ] Refine auth check to handle instance when user is not logged in at all
+- [ ] 
 
 
 
@@ -108,40 +110,72 @@ Upload your csv in the appropriate input and click submit.
 When you publish the package dependencies, a file will be created at `config/csvimport.php`
 You can configure various options by changing this file.
 
-### Directory Readable to MYSQL User
-If the absolute path to the folder you have configured for your mysql user is differet than `/data`, change the "sql_directory" option to your folder (do not include trailing slashes).
+``` php 
 
-### Authentication
-If you would like to restrict access to non-authenticated users, change the "auth" option to "true".  You will need to add a public method "can_import" to your user model that contains your authentication logic.
+return [
+    'import_order'=>[],
+    'auth'=>false,
+    'sql_directory'=>'/data',
+    'override_layout_view'=> false,
+    'importer_namespace'=>"\\App\\CSVImports\\",
+    'importer_directory'=>app_path('CSVImports')
+];
 
+```
 
-### Routing
-
-#### Option 1 - Automatic 
-If you would like to leverage automatic routing, make sure to add the above before the application routing service provider:
+### Import Order
+Sometimes you have inter dependencies between the tables you import content into and need the imports to run in a specified order.  
+To accomplish this, simply add an array with keys that are the importer name in  snake_case with "Importer" removed, eg `AdminUsersImporter=>admin_users` and a value of the 0-based order in which it should run.
+                                                                                                                                      
+For example, if you have a UserTypesImporter and a UsersImporter that need to run in that order, your config file will look like:
 
 ``` php 
-// [...]
- RTMatt\CSVImport\CSVImportServiceProvider::class,
-  /*
-  * Application Service Providers...
-  */
- App\Providers\AppServiceProvider::class,
- // [...]
+
+import_order'=>[
+	'user_types'=>0,
+	'users'=>1
+],
 
 ```
 
-If your routes are cached, make sure to clear the route cache.
+### Authentication
+If you would like to restrict access to the import area, simply change the auth config to `true`.  You will need to add a method  your User model containing your autentication logic.
+
+``` php 
+
+public function can_import(){
+ // your authentication logic here
+}
+
+```
+  
+  
+### Directory Readable to MYSQL User
+If the absolute path to the folder you have configured for your mysql user is different than `/data`, change the "sql_directory" option to your folder (do not include trailing slashes).
+
+### Layout Overrides
+If you have a master layout you would like the importer to extend, you can change the `override_layout_view` config with a string in the same manner as you would load a view.  
+For example, if the layout you would like to extend exists in `[..]/resources/views/layouts/admin.blade.php` you would set the config as follows:
 
 
-``` bash 
+``` php 
 
-$ php artisan route:clear
+'override_layout_view'=> 'layouts.admin,
 
 ```
 
-#### Option 2 - Manual
-In your routes.php file, manually define the route you would like to use (make sure it's a controller route):
+### Importer Directory
+When you run `php artisan vendor:publish`, a directory called CSVImports is created in the app_path for your importers.  If you would like keep your importers elsewhere, add  the directory and its namespace to this configs.
+
+``` php 
+
+ 'importer_namespace'=>"\\New\\Namespace\\",
+ 'importer_directory'=>base_path('Some/Other/Directory/CSVImports')
+
+```
+
+### Routing
+If you would like the import tool to be accessible at a route different from the default, you can manually define a controller route in your application routes file
 
 ``` php
  
@@ -150,67 +184,3 @@ Route::controller([your route here],'\RTMatt\CSVImport\CSVImportController');
 // [...]
 
 ```
-
-
-### Run Imports
-	* Navigate to the route of your importer (either /csv-imports  or the custom route you defined earlier);
-	* Fill out the form and be done.
-  
-  ## Configuration
-  You can configure the importer by modifying `config/csvimport.php`.  
-  
-  ``` php 
-  
-  <?php
-  
-  return [
-      'import_order'=>[],
-      'auth'=>false,
-      'sql_directory'=>'/data'
-  ];
-  
-  ```
-  
-  ### Import Order
-  By default, CSVImporter will run multiple imports in a randomized order. 
-  
-  If your imports must be run in a certain order, you can configure the order in which they run. Simply add an array with keys that are the importer name in  snake_case with "Importer" removed, eg `AdminUsersImporter=>admin_users` and a value of the 0-based order in which it should run.
-  
-  For example, if you have a UserTypesImporter and a UsersImporter that need to run in that order, your config file will look like:
-  
-  ``` php 
-  
-  // ..
-	import_order'=>[
-		'user_types'=>0,
-		'users'=>1
-	],
-  // ..
-  ```
-  
-  ### Authentication
-  If you would like to restrict access to the import area, simply change the auth config to `true`.  You will need to add a method  your User model containing your autentication logic.
-  
-  ``` php 
-  
-  public function can_import(){
-	 // your authentication logic here
-  }
-  
-  ```
-  ### SQL Directory
-  The CSVImporter moves uploaded CSV files to a directory the mysql user can read from.  By default, CSVImporter will try to use the directory "/data"
-   You can easily change this to your preferred directory by modifying this config. 
-  
-  
-  
-
-  
-  
-  
-  
-## Advanced Usage
-If you have a long list of imports to run and some depend on others, you can define the order in which they run. In `config/csvimport.php`, modify the import_order array with the your importer name in snake_case with "Importer" removed, eg `AdminUsersImporter=>admin_users`
-
-
-  
