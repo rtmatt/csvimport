@@ -1,5 +1,4 @@
 - [ ] Custom Route Config
-- [ ] Add artisan command
 
 
 
@@ -214,7 +213,6 @@ protected function postSQLImport()
     {
         $users = \App\User::all();
         foreach($users as $user){
-        	$full_name = 
         	$user->full_name = $user->first_name.' '.$user->last_name;
 		 	$user->save;
         }
