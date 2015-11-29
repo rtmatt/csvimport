@@ -3,3 +3,5 @@
 ._*
 
 .idea*
+spec/testImportDirectory/*
+!spec/testImportDirectory/.gitkeep
