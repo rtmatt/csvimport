@@ -1,9 +1,5 @@
-- [ ] Complete Documentation
-- [ ] Acceptance Tests [?]
-- [ ] Unit Tests
 - [ ] Custom Route Config
 - [ ] Add artisan command
-- [ ] Refine auth check to handle instance when user is not logged in at all
 
 
 
@@ -61,9 +57,18 @@ $ php artisan vendor:publish --provider="RTMatt\CSVImport\CSVImportServiceProvid
 
 ## Usage
 ### Set Up Importer
-Add a new file to `app/CSVImports` with the name of [ResourceName]Importer.php.  
+#### Automatic
+
+``` bash 
+
+$ php artisan csvimport:make YourImporterName
+
+```
+
+This will create a stub in your configured directory.  You will need to fully implement the stubbed methods.
+
   
-  ``` php 
+``` php 
   
   <?php
   
@@ -183,3 +188,42 @@ Route::controller([your route here],'\RTMatt\CSVImport\CSVImportController');
 // [...]
 
 ```
+
+## Advanced Usage
+You have further control over the import process.  All you have to do is implement any of the following methods in your importer.
+### Override Import Command
+You can override the sql statement run by the importer by adding this method to your class.
+
+``` php 
+
+protected function overrideImportCommand()
+   {
+		$statement = //Your sql statement 
+	   return $statement;
+   }
+
+```
+
+### Post Import Work
+Say you have a spreadsheet for users with the columns 'first_name' and 'last_name'.  After you run this import, you want to populate a 'full_name' field as the two concatenated.  Well, you're in luck. Just implement this method:
+
+
+``` php 
+
+protected function postSQLImport()
+    {
+        $users = \App\User::all();
+        foreach($users as $user){
+        	$full_name = 
+        	$user->full_name = $user->first_name.' '.$user->last_name;
+		 	$user->save;
+        }
+    }
+
+```
+
+
+# THAT'S IT.
+## Updates are coming soon.  
+
+
