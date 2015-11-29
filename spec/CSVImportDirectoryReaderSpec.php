@@ -47,7 +47,27 @@ class CSVImportDirectoryReaderSpec extends ObjectBehavior
 
 
     public function it_ignores_dot_files(){
-        
+        CSVImportDirectoryTestHelper::clearDirectory(__DIR__ . '/testImportDirectory');
+        CSVImportDirectoryTestHelper::clearDirectory(__DIR__ . '/testImportDirectory');
+        $goodFiles   = [
+            'FileInformationImporter.php',
+            'UserImporter.php',
+            'PoopImporter.php'
+        ];
+        $junk_files = [
+            '.FileInformationImporter.php',
+            '.UserImporter.php',
+            '.PoopImporter.php'
+
+        ];
+        $testFileSet = array_merge($goodFiles,$junk_files);
+        CSVImportDirectoryTestHelper::buildDirectory(__DIR__ . '/testImportDirectory', $testFileSet);
+        $read_files = $this::readDirectory(__DIR__ . '/testImportDirectory');
+        $read_files->shouldBeArray();
+        $read_files->shouldHaveCount(count($goodFiles));
+        foreach($goodFiles as $good_file){
+            $read_files->shouldContain($good_file);
+        }
     }
 
 }
