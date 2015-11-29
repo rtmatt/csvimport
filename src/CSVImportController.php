@@ -84,6 +84,9 @@ class CSVImportController extends Controller
     protected function authorizeUser()
     {
         $user = $this->getCurrentUser();
+        if(!$user){
+            abort(401, 'Unauthorized action.');
+        }
         if ( ! method_exists($user, 'can_import')) {
             throw new CSVIncompatibleUserException('Incompatible user model.  can_import method needs to be defined');
         }
