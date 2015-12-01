@@ -1,9 +1,9 @@
 
 namespace {{$namespace}};
 
-use RTMatt\CSVImport\CSVImporter;
+use RTMatt\CSVImport\CSVImportImporter;
 
-class {{studly_case($importer_name)}}Importer extends CSVImporter {
+class {{studly_case($importer_name)}}Importer extends CSVImportImporter {
 
     protected function setResourceName()
     {

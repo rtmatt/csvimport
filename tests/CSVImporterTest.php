@@ -21,7 +21,7 @@ class CSVImporterTest extends TestCase
         parent::setUp();
         $csv            = new \Symfony\Component\HttpFoundation\File\UploadedFile(__DIR__ . '/files/basic.csv',
             'basic.csv', null, null, null, true);
-        $importer       = new ConcreteCSVImport($csv);
+        $importer       = new ConcreteCSVImportImport($csv);
         $this->importer = $importer;
         $this->csv      = $csv;
 
@@ -31,7 +31,7 @@ class CSVImporterTest extends TestCase
     /** @test */
     public function it_can_be_initialized()
     {
-        $this->assertInstanceOf('\RTMatt\CSVImport\CSVImporter', $this->importer);
+        $this->assertInstanceOf('\RTMatt\CSVImport\CSVImportImporter', $this->importer);
     }
 
 
@@ -81,7 +81,7 @@ class CSVImporterTest extends TestCase
     /** @test */
     public function it_runs_post_sql_commands()
     {
-        $importer = new ConcreteCSVPostImport($this->csv);
+        $importer = new ConcreteCSVImportPostImport($this->csv);
         $importer->import();
         $records = \DB::table('tests')->get();
         foreach($records as $record){
@@ -91,7 +91,7 @@ class CSVImporterTest extends TestCase
     
     /** @test */
     public function it_can_have_overridden_import_command(){
-        $importer = new ConcreteCSVOverrideImport($this->csv);
+        $importer = new ConcreteCSVImportOverrideImport($this->csv);
         \DB::table('tests')->delete();
         $importer->import();
         $record = \DB::table('tests')->first();
@@ -103,7 +103,7 @@ class CSVImporterTest extends TestCase
 
 }
 
-class ConcreteCSVImport extends \RTMatt\CSVImport\CSVImporter
+class ConcreteCSVImportImport extends \RTMatt\CSVImport\CSVImportImporter
 {
 
     protected function setResourceName()
@@ -130,7 +130,7 @@ class ConcreteCSVImport extends \RTMatt\CSVImport\CSVImporter
     }
 }
 
-class ConcreteCSVPostImport extends \RTMatt\CSVImport\CSVImporter
+class ConcreteCSVImportPostImport extends \RTMatt\CSVImport\CSVImportImporter
 {
 
     protected function setResourceName()
@@ -168,7 +168,7 @@ class ConcreteCSVPostImport extends \RTMatt\CSVImport\CSVImporter
     }
 }
 
-class ConcreteCSVOverrideImport extends \RTMatt\CSVImport\CSVImporter
+class ConcreteCSVImportOverrideImport extends \RTMatt\CSVImport\CSVImportImporter
 {
 
     protected function setResourceName()

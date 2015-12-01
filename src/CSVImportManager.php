@@ -31,7 +31,7 @@ class CSVImportManager
     }
 
 
-    public function queue(CSVImporter $importer, $key=null)
+    public function queue(CSVImportImporter $importer, $key=null)
     {
         $queue_key = $this->getImporterOrder($key);
 

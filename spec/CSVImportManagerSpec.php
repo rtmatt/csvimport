@@ -4,16 +4,16 @@ namespace spec\RTMatt\CSVImport;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use RTMatt\CSVImport\CSVImporter;
+use RTMatt\CSVImport\CSVImportImporter;
 
 class CSVImportManagerSpec extends ObjectBehavior
 {
 
     function let(
-        CSVImporter $one,
-        CSVImporter $two,
-        CSVImporter $three,
-        CSVImporter $four
+        CSVImportImporter $one,
+        CSVImportImporter $two,
+        CSVImportImporter $three,
+        CSVImportImporter $four
     ) {
         $one->import()->willReturn(' one imported.');
         $two->import()->willReturn(' two imported.');
@@ -29,7 +29,7 @@ class CSVImportManagerSpec extends ObjectBehavior
     }
 
 
-    function it_queues_Importers(CSVImporter $importer)
+    function it_queues_Importers(CSVImportImporter $importer)
     {
         $this->beConstructedWith([ 'foo' => 0 ]);
         $this->queue($importer, 'foo');
@@ -38,7 +38,7 @@ class CSVImportManagerSpec extends ObjectBehavior
     }
 
 
-    function it_runs_queued_importers(CSVImporter $importer)
+    function it_runs_queued_importers(CSVImportImporter $importer)
     {
         $this->beConstructedWith([ 'foo' => 0 ]);
         $this->queue($importer, 'foo');
@@ -48,7 +48,7 @@ class CSVImportManagerSpec extends ObjectBehavior
 
 
     //
-    function it_queues_importers_in_correct_order(CSVImporter $importerone, CSVImporter $importertwo)
+    function it_queues_importers_in_correct_order(CSVImportImporter $importerone, CSVImportImporter $importertwo)
     {
         $this->beConstructedWith([ 'foo' => 0, 'bar' => 1 ]);
         $importerone->name = 'One';
@@ -61,7 +61,7 @@ class CSVImportManagerSpec extends ObjectBehavior
     }
 
 
-    function it_runs_queues_with_no_order_set(CSVImporter $importerone, CSVImporter $importertwo)
+    function it_runs_queues_with_no_order_set(CSVImportImporter $importerone, CSVImportImporter $importertwo)
     {
         $this->beConstructedWith([ ]);
         $importerone->name = 'One';
@@ -76,10 +76,10 @@ class CSVImportManagerSpec extends ObjectBehavior
 
 
     function it_runs_ordered_queues_first_then_others(
-        CSVImporter $one,
-        CSVImporter $two,
-        CSVImporter $three,
-        CSVImporter $four
+        CSVImportImporter $one,
+        CSVImportImporter $two,
+        CSVImportImporter $three,
+        CSVImportImporter $four
     ) {
 
         $this->beConstructedWith([ 'foo' => 0, 'bar' => 1 ]);
@@ -92,10 +92,10 @@ class CSVImportManagerSpec extends ObjectBehavior
 
 
     function it_runs_ordered_non_sequential_queues(
-        CSVImporter $one,
-        CSVImporter $two,
-        CSVImporter $three,
-        CSVImporter $four
+        CSVImportImporter $one,
+        CSVImportImporter $two,
+        CSVImportImporter $three,
+        CSVImportImporter $four
     )
     {
         $this->beConstructedWith([ 'foo' => 0, 'bar' => 5 ]);

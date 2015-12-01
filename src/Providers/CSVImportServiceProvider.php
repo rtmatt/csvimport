@@ -1,9 +1,9 @@
 <?php
 
-namespace RTMatt\CSVImport;
+namespace RTMatt\CSVImport\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use RTMatt\CSVImport\CSVCreateImporter;
+use RTMatt\CSVImport\Commands\CSVCreateImporterCommand;
 
 class CSVImportServiceProvider extends ServiceProvider
 {
@@ -15,13 +15,13 @@ class CSVImportServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__ . '/views', 'csvimport');
+        $this->loadViewsFrom(__DIR__ . '/../views', 'csvimport');
         $this->publishes([
-            __DIR__ . '/config/csvimport.php' => config_path('csvimport.php'),
-            __DIR__ . '/Publish'              => app_path()
+            __DIR__ . '/../config/csvimport.php' => config_path('csvimport.php'),
+            __DIR__ . '/../Publish'              => app_path()
         ]);
 
-        require __DIR__ . '/routes/routes.php';
+        require __DIR__ . '/../routes/routes.php';
 
     }
 
@@ -34,11 +34,11 @@ class CSVImportServiceProvider extends ServiceProvider
     public function register()
     {
 
-        $this->mergeConfigFrom(__DIR__ . '/config/csvimport.php', 'csvimport');
+        $this->mergeConfigFrom(__DIR__ . '/../config/csvimport.php', 'csvimport');
 
         $this->commands('csvimport:make {importer}');
         $this->app['csvimport:make {importer}'] = $this->app->share(function ($app) {
-            return new CSVCreateImporter;
+            return new CSVCreateImporterCommand;
         });
 
     }

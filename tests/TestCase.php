@@ -13,7 +13,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function getPackageProviders($app)
     {
-        return [ 'RTMatt\CSVImport\CSVImportServiceProvider' ];
+        return [ 'RTMatt\CSVImport\Providers\CSVImportServiceProvider' ];
     }
 
 

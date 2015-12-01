@@ -6,13 +6,13 @@
  * Time: 7:42 PM
  */
 
-namespace RTMatt\CSVImport;
+namespace RTMatt\CSVImport\Commands;
 
 use Illuminate\Console\Command;
 use RTMatt\CSVImport\Exceptions\CSVDirectoryNotWritableException;
 use RTMatt\CSVImport\Exceptions\CSVImporterExistsError;
 
-class CSVCreateImporter extends Command
+class CSVCreateImporterCommand extends Command
 {
 
     /**

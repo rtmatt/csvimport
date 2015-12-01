@@ -2,7 +2,7 @@
 
 namespace RTMatt\CSVImport\Tests\Importers;
 
-class MultipleWordImporter extends \RTMatt\CSVImport\CSVImporter
+class MultipleWordImporter extends \RTMatt\CSVImport\CSVImportImporter
 {
 
     protected function setResourceName()

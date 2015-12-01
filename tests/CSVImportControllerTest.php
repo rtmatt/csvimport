@@ -98,7 +98,7 @@ class CSVImportControllerTest extends TestCase
         $layout_view       = view($layout_file);
         $layout_path       = $layout_view->getPath();
         $pre_packaged_view = realpath(__DIR__ . DIRECTORY_SEPARATOR . '..') . '/src/views/layout.blade.php';
-        $this->assertEquals($layout_path, $pre_packaged_view);
+        $this->assertEquals(realpath($layout_path), realpath($pre_packaged_view));
     }
 
 

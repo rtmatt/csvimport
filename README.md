@@ -36,7 +36,7 @@ In app/config.php, add the following to the providers list ABOVE the application
 
 ```  php
 //    [...]
-RTMatt\CSVImport\CSVImportServiceProvider::class,
+RTMatt\CSVImport\Providers\CSVImportServiceProvider::class,
 //    [...]
 App\Providers\RouteServiceProvider::class,
 
@@ -78,9 +78,9 @@ This will create a stub in your configured directory.  You will need to fully im
   
   namespace App\CSVImports;
   
-  use RTMatt\CSVImport\CSVImporter;
+  use RTMatt\CSVImport\CSVImportImporter;
   
-  class YourResourceNameImporter extends CSVImporter {
+  class YourResourceNameImporter extends CSVImportImporter {
   
       protected function setResourceName()
       {

@@ -87,8 +87,8 @@ class CSVCreateImporterTest extends TestCase
         $this->clearDirectory();
         $fileName = $this->callCommandAndReturnFileName('spaghetti_noodles');
         $contents = file_get_contents(config('csvimport.importer_directory') . '/'.$fileName);
-        $this->assertContains("class SpaghettiNoodlesImporter extends CSVImporter",$contents);
-        $this->assertContains("use RTMatt\\CSVImport\\CSVImporter;",$contents);
+        $this->assertContains("class SpaghettiNoodlesImporter extends CSVImportImporter",$contents);
+        $this->assertContains("use RTMatt\\CSVImport\\CSVImportImporter;",$contents);
         $this->assertContains("protected function setResourceName()",$contents);
         $this->assertContains("protected function setTableName()",$contents);
         $this->assertContains("protected function setFieldString()",$contents);

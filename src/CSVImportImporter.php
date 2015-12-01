@@ -2,7 +2,7 @@
 
 namespace RTMatt\CSVImport;
 
-abstract class CSVImporter
+abstract class CSVImportImporter
 {
 
     protected $csv;

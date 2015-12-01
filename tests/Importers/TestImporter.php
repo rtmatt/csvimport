@@ -2,7 +2,9 @@
 
 namespace RTMatt\CSVImport\Tests\Importers;
 
-class TestImporter extends \RTMatt\CSVImport\CSVImporter
+use RTMatt\CSVImport\CSVImportImporter;
+
+class TestImporter extends CSVImportImporter
 {
 
     protected function setResourceName()
