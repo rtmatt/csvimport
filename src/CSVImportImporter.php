@@ -27,15 +27,25 @@ abstract class CSVImportImporter
     public function import()
     {
 
-        $this->processCSVFile();
+        try{
+            $this->processCSVFile();
 
-        $this->resetTable();
+            $this->resetTable();
 
-        $this->runImportCommand();
+            $this->runImportCommand();
 
-        $this->postSQLImport();
+            $this->postSQLImport();
 
-        $this->deleteSQLPathCSV();
+            $this->deleteSQLPathCSV();
+        }catch(\Exception $e){
+            if($e instanceof \PDOException ){
+                throw new \RTMatt\CSVImport\Exceptions\CSVImportException($e->getMessage());
+            }
+            else{
+                throw $e;
+            }
+        }
+
 
         return $this->prepareMessage();
     }

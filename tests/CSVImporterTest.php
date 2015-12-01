@@ -8,6 +8,8 @@
 
 namespace RTMatt\CSVImport\Tests;
 
+use RTMatt\CSVImport\Tests\Importers\ErrorGeneratingImporter;
+
 class CSVImporterTest extends TestCase
 {
 
@@ -84,20 +86,33 @@ class CSVImporterTest extends TestCase
         $importer = new ConcreteCSVImportPostImport($this->csv);
         $importer->import();
         $records = \DB::table('tests')->get();
-        foreach($records as $record){
-            $this->assertEquals($record->name_time,$record->name.$record->time);
+        foreach ($records as $record) {
+            $this->assertEquals($record->name_time, $record->name . $record->time);
         }
     }
-    
+
+
     /** @test */
-    public function it_can_have_overridden_import_command(){
+    public function it_can_have_overridden_import_command()
+    {
         $importer = new ConcreteCSVImportOverrideImport($this->csv);
         \DB::table('tests')->delete();
         $importer->import();
         $record = \DB::table('tests')->first();
-        $this->assertEquals($record->name,'acceptance');
-        $this->assertEquals($record->type,'30');
-        $this->assertEquals($record->time,'J. Jeffery');
+        $this->assertEquals($record->name, 'acceptance');
+        $this->assertEquals($record->type, '30');
+        $this->assertEquals($record->time, 'J. Jeffery');
+    }
+
+
+    /** @test
+     * @expectedException \RTMatt\CSVImport\Exceptions\CSVImportException
+     */
+    public function it_throws_an_exception_when_improperly_configured()
+    {
+        $importer = new ErrorGeneratingImporter($this->csv);
+        $importer->import();
+
     }
 
 
@@ -141,11 +156,11 @@ class ConcreteCSVImportPostImport extends \RTMatt\CSVImport\CSVImportImporter
 
     protected function postSQLImport()
     {
-        $first     = \DB::table('tests')->where('id','=',1)->first();
+        $first   = \DB::table('tests')->where('id', '=', 1)->first();
         $records = \DB::table('tests')->get();
-        foreach($records as $record){
+        foreach ($records as $record) {
             $name_time = $record->name . $record->time;
-            \DB::table('tests')->where('id','=',$record->id)->update(['name_time'=>$name_time]);
+            \DB::table('tests')->where('id', '=', $record->id)->update([ 'name_time' => $name_time ]);
         }
     }
 
