@@ -5,3 +5,6 @@
 .idea*
 spec/testImportDirectory/*
 !spec/testImportDirectory/.gitkeep
+
+tests/CommandImporters/*
+!tests/CommandImporters/.gitkeep
