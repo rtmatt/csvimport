@@ -3,7 +3,6 @@
 - [ ] Rollback imports upon error with importer
 - [ ] Report events where unique keys are repeated
 - [ ] Add automatic photo upload support
-- [ ] Clean up and document test storage folders
 
 
 
@@ -126,7 +125,8 @@ return [
     'sql_directory'=>'/data',
     'override_layout_view'=> false,
     'importer_namespace'=>"\\App\\CSVImports\\",
-    'importer_directory'=>app_path('CSVImports')
+    'importer_directory'=>app_path('CSVImports'),
+    'custom_route'=>false
 ];
 
 ```
@@ -192,6 +192,9 @@ Route::controller([your route here],'\RTMatt\CSVImport\CSVImportController');
 // [...]
 
 ```
+
+Also, be sure to set the `custom_route` config to `true`, otherwise both your route and the default route will be registered.
+
 
 ## Advanced Usage
 You have further control over the import process.  All you have to do is implement any of the following methods in your importer.

@@ -21,7 +21,9 @@ class CSVImportServiceProvider extends ServiceProvider
             __DIR__ . '/../Publish'              => app_path()
         ]);
 
-        require __DIR__ . '/../routes/routes.php';
+        if(!config('csvimport.custom_route')){
+            require __DIR__ . '/../routes/routes.php';
+        }
 
     }
 
