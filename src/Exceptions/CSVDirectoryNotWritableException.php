@@ -9,4 +9,4 @@
 namespace RTMatt\CSVImport\Exceptions;
 
 
-class CSVDirectoryNotWritableException extends \Exception{}
+class CSVDirectoryNotWritableException extends CSVImportException{}

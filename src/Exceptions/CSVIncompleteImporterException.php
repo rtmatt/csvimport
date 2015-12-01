@@ -9,4 +9,4 @@
 namespace RTMatt\CSVImport\Exceptions;
 
 
-class CSVIncompleteImporterException extends \Exception{}
+class CSVIncompleteImporterException extends CSVImportException{}

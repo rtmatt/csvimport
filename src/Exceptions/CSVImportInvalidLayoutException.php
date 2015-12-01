@@ -8,4 +8,4 @@
 
 namespace RTMatt\CSVImport\Exceptions;
 
-class CSVImportInvalidLayoutException extends \Exception{}
+class CSVImportInvalidLayoutException extends CSVImportException{}

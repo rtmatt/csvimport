@@ -2,4 +2,4 @@
 
 namespace RTMatt\CSVImport\Exceptions;
 
-class CSVImporterExistsError extends \Exception{}
+class CSVImporterExistsError extends CSVImportException{}

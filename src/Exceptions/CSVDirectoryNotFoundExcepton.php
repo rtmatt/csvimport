@@ -2,5 +2,5 @@
 
 namespace RTMatt\CSVImport\Exceptions;
 
-class CSVDirectoryNotFoundExcepton extends \Exception{}
+class CSVDirectoryNotFoundExcepton extends CSVImportException{}
 

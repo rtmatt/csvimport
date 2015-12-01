@@ -9,4 +9,4 @@
 namespace RTMatt\CSVImport\Exceptions;
 
 
-class CSVIncompatibleUserException extends \Exception{}
+class CSVIncompatibleUserException extends CSVImportException{}
