@@ -21,12 +21,18 @@ class CSVImportManager
 
     public $queue = [ ];
 
+    private $errors;
+
+    private $messages;
+
 
     function __construct(array $queue_order = [])
     {
         $this->queue_order = $queue_order;
         $this->ordered_imports = [];
         $this->unordered_imports = [];
+        $this->errors = [];
+        $this->messages = [];
 
     }
 
@@ -47,10 +53,10 @@ class CSVImportManager
     {
         ksort($this->ordered_imports);
         foreach ($this->ordered_imports as $importer) {
-            $this->message .= $importer->import();
+            $this->runImporter($importer);
         }
         foreach ($this->unordered_imports as $importer2) {
-            $this->message .= $importer2->import();
+            $this->runImporter($importer2);
         }
         return trim($this->message);
     }
@@ -65,6 +71,36 @@ class CSVImportManager
 
         return null;
 
+    }
+
+    public function messages()
+    {
+        if(!count($this->messages)){
+            return null;
+        }
+        return implode(' ',$this->messages);
+    }
+
+
+    /**
+     * @param $importer
+     */
+    protected function runImporter($importer)
+    {
+        $importer->import();
+        if ($importer->fails()) {
+            $this->errors[] = $importer->errors();
+        } else {
+            $this->messages[] = $importer->message();
+        }
+    }
+
+    public function errors()
+    {
+        if(!count($this->errors)){
+            return null;
+        }
+        return implode(' ',$this->errors);
     }
 
 

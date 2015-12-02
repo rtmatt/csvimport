@@ -63,6 +63,9 @@ class CSVImportController extends Controller
     public function postIndex(Request $request)
     {
         $import_manager = new CSVImportManager(config('csvimport.import_order'));
+        if(count($request->file())==0){
+            return redirect()->back()->withErrors('No Files Uploaded');
+        }
         foreach ($request->file() as $key => $csv) {
             $importer_identifier = config('csvimport.importer_namespace') . studly_case($key) . "Importer";
             if ( ! class_exists($importer_identifier)) {
@@ -71,12 +74,11 @@ class CSVImportController extends Controller
             $importer = new $importer_identifier($csv);
             $import_manager->queue($importer, $key);
         }
-        $message = $import_manager->run();
-        if ($message != '') {
-            return redirect()->back()->with([ 'flash_message' => $message ]);
-        } else {
-            return redirect()->back()->withErrors('No Files Uploaded');
-        }
+        $import_manager->run();
+        //if($import_manager->noChange()){
+        //    return redirect()->back()->withErrors('No Files Uploaded');
+        //}
+        return redirect()->back()->with(['flash_message'=>$import_manager->messages()])->withErrors($import_manager->errors());
 
     }
 

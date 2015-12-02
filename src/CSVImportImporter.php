@@ -13,6 +13,12 @@ abstract class CSVImportImporter
 
     protected $field_string;
 
+    private $succeeded;
+
+    private $message;
+
+    private $errors;
+
 
     function __construct($csv)
     {
@@ -21,6 +27,9 @@ abstract class CSVImportImporter
         $this->field_string  = $this->setFieldString();
         $this->csv           = $csv;
         $this->sql_data_path = config('csvimport.sql_directory') . '/';
+        $this->succeeded = false;
+        $this->errors = [];
+
     }
 
 
@@ -37,9 +46,10 @@ abstract class CSVImportImporter
             $this->postSQLImport();
 
             $this->deleteSQLPathCSV();
+            $this->succeeded = true;
         }catch(\Exception $e){
             if($e instanceof \PDOException ){
-                throw new \RTMatt\CSVImport\Exceptions\CSVImportException($e->getMessage());
+                $this->handleErrors($e);
             }
             else{
                 throw $e;
@@ -47,9 +57,14 @@ abstract class CSVImportImporter
         }
 
 
-        return $this->prepareMessage();
+        $this->prepareMessage();
     }
 
+
+    public function message()
+    {
+        return $this->message;
+    }
 
     protected function deleteSQLPathCSV()
     {
@@ -106,9 +121,30 @@ abstract class CSVImportImporter
      */
     protected function prepareMessage()
     {
-        return ' ' . ucwords(str_ireplace('_', ' ', $this->resource_name)) . ' Imported.';
+        $this->message = $this->getImporterName() . ' Imported.';
     }
 
+
+    public function succeeds()
+    {
+        return $this->succeeded;
+    }
+
+
+    public function fails()
+    {
+        return !$this->succeeds();
+    }
+
+
+    public function errors()
+    {
+       $message = $this->getImporterName() . ' not imported:';
+        foreach($this->errors as $error){
+            $message.= ' '.$error;
+        }
+        return $message;
+    }
 
     abstract protected function setResourceName();
 
@@ -134,6 +170,21 @@ abstract class CSVImportImporter
     protected function overrideImportCommand()
     {
         return false;
+    }
+
+
+    protected function handleErrors($e)
+    {
+        $this->errors[] = $e->getMessage();
+    }
+
+
+    /**
+     * @return string
+     */
+    protected function getImporterName()
+    {
+        return ucwords(str_ireplace('_', ' ', $this->resource_name));
     }
 
 }

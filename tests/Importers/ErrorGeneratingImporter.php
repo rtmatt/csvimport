@@ -7,7 +7,7 @@ class ErrorGeneratingImporter extends \RTMatt\CSVImport\CSVImportImporter
 
     protected function setResourceName()
     {
-        return "multiple words";
+        return "Error Generating";
     }
 
     /**
@@ -15,7 +15,7 @@ class ErrorGeneratingImporter extends \RTMatt\CSVImport\CSVImportImporter
      */
     protected function setTableName()
     {
-        return "field_that_does_not_exist";
+        return "tests";
     }
 
 
@@ -24,6 +24,6 @@ class ErrorGeneratingImporter extends \RTMatt\CSVImport\CSVImportImporter
      */
     protected function setFieldString()
     {
-        return "name,type,time";
+        return "field_not_existing,error_generating,not_real";
     }
 }

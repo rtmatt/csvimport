@@ -10,8 +10,23 @@ namespace RTMatt\CSVImport\Tests;
 
 use RTMatt\CSVImport\Tests\Importers\ErrorGeneratingImporter;
 
+
 class CSVImporterTest extends TestCase
 {
+    /**
+     * TESTS
+     * it_can_be_initialized
+     * it_does_not_cause_change_to_sql_directory
+     * it_resets_database
+     * it_imports_all_lines_in_basic_csv
+     * it_imports_all_lines_in_basic_csv
+     * it_returns_message_on_success
+     * it_runs_post_sql_commands
+     * it_can_have_overridden_import_command
+     * //it_resets_db_state_upon_error
+     *  it_has_message_on_success
+     */
+
 
     protected $importer;
 
@@ -23,9 +38,12 @@ class CSVImporterTest extends TestCase
         parent::setUp();
         $csv            = new \Symfony\Component\HttpFoundation\File\UploadedFile(__DIR__ . '/files/basic.csv',
             'basic.csv', null, null, null, true);
+        $csv2  =  new \Symfony\Component\HttpFoundation\File\UploadedFile(__DIR__ . '/files/basic2.csv',
+            'basic2.csv', null, null, null, true);
         $importer       = new ConcreteCSVImportImport($csv);
         $this->importer = $importer;
         $this->csv      = $csv;
+        $this->csv2 = $csv2;
 
     }
 
@@ -76,7 +94,9 @@ class CSVImporterTest extends TestCase
     public function it_returns_message_on_success()
     {
         $message = $this->importer->import();
-        $this->assertEquals(' Tests Imported.', $message);
+        if($this->importer->succeeds()){
+            $this->assertEquals('Tests Imported.', $this->importer->message());
+        }
     }
 
 
@@ -104,15 +124,53 @@ class CSVImporterTest extends TestCase
         $this->assertEquals($record->time, 'J. Jeffery');
     }
 
+    ///** @test */
+    //public function it_resets_db_state_upon_error(){
+    //    $importer = new ConcreteCSVImportOverrideImport($this->csv);
+    //    \DB::table('tests')->delete();
+    //    $importer->import();
+    //    $count = \DB::table('tests')->count();
+    //    $this->assertTrue($count>0);
+    //    var_dump($count);
+    //    $failure = new \RTMatt\CSVImport\Tests\Importers\ErrorGeneratingImporter($this->csv);
+    //    $failure->import();
+    //    $count2 = \DB::table('tests')->count();
+    //    var_dump($count2);
+    //    $this->assertEquals($count,$count2);
+    //}
 
-    /** @test
-     * @expectedException \RTMatt\CSVImport\Exceptions\CSVImportException
-     */
-    public function it_throws_an_exception_when_improperly_configured()
-    {
-        $importer = new ErrorGeneratingImporter($this->csv);
+    /** @test */
+    public function it_has_state_and_message_on_success(){
+        $importer = new ConcreteCSVImportOverrideImport($this->csv);
         $importer->import();
+        $this->assertTrue($importer->succeeds());
+        $this->assertEquals($importer->message(),'Tests Imported.');
+    }
 
+    /** @test */
+    public function it_has_state_and_errors_on_failure(){
+        $failure = $this->runFailingImporter();
+        $this->assertTrue($failure->fails());
+        $this->assertNotNull($failure->errors());
+    }
+
+    /** @test */
+    public function it_returns_importer_name_plus_errors_upon_error(){
+        $failure = $this->runFailingImporter();
+        $this->assertContains('Error Generating not imported:',$failure->errors());
+    }
+
+
+    /**
+     * @return ErrorGeneratingImporter
+     * @throws \Exception
+     */
+    protected function runFailingImporter()
+    {
+        $failure = new ErrorGeneratingImporter($this->csv);
+        $failure->import();
+
+        return $failure;
     }
 
 

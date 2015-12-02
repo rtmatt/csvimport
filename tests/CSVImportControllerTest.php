@@ -8,7 +8,6 @@
 namespace RTMatt\CSVImport\Tests;
 
 use RTMatt\CSVImport\CSVImportController;
-use RTMatt\CSVImport\Tests\TestCase;
 
 class CSVImportControllerTest extends TestCase
 {
@@ -38,7 +37,6 @@ class CSVImportControllerTest extends TestCase
     }
 
 
-
     /** @test */
     public function it_can_be_initialized()
     {
@@ -65,7 +63,7 @@ class CSVImportControllerTest extends TestCase
         $this->call('GET', 'csv-import');
         $this->assertResponseOk();
         $this->assertViewHas('fields', [ ]);
-       $this->assertContains('Import Directory Does Not Exist',$this->response->original->render());
+        $this->assertContains('Import Directory Does Not Exist', $this->response->original->render());
     }
 
 
@@ -85,7 +83,7 @@ class CSVImportControllerTest extends TestCase
     {
         \Config::set('csvimport.importer_directory', __DIR__ . '/Importers');
         $this->call('GET', 'csv-import');
-        $this->assertViewHas('fields', [ 'multiple_word', 'test' ]);
+        $this->assertViewHas('fields', [ 'error_generating', 'multiple_word', 'test' ]);
     }
 
 
@@ -131,7 +129,8 @@ class CSVImportControllerTest extends TestCase
     {
         $this->call('POST', 'csv-import', [ ]);
         $this->assertResponseStatus(302);
-        $this->assertSessionHasErrors();
+        $errors = \Session::get('errors')->getBag('default')->all();
+        $this->assertContains('No Files Uploaded', $errors);
     }
 
 
@@ -172,6 +171,34 @@ class CSVImportControllerTest extends TestCase
         $this->assertSessionHas('flash_message', 'Tests Imported. Multiple Words Imported.');
 
 
+    }
+
+
+    /** @test */
+    public function it_displays_errors_for_failures()
+    {
+        \Config::set('csvimport.importer_namespace', '\\RTMatt\\CSVImport\\Tests\\Importers\\');
+        $csv = new \Symfony\Component\HttpFoundation\File\UploadedFile(__DIR__ . '/files/basic.csv', 'basic.csv', null,
+            null, null, true);
+        $this->call('POST', 'csv-import', [ ], [ ], [ 'error_generating' => $csv ]);
+
+        $errors = \Session::get('errors')->getBag('default')->all();
+        $this->assertContains("Error Generating not imported: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'field_not_existing' in 'field list'", $errors);
+    }
+
+
+    /** @test */
+    public function it_displays_successes_and_errors_simultanesously()
+    {
+        \Config::set('csvimport.importer_namespace', '\\RTMatt\\CSVImport\\Tests\\Importers\\');
+        $csv = new \Symfony\Component\HttpFoundation\File\UploadedFile(__DIR__ . '/files/basic.csv', 'basic.csv', null,
+            null, null, true);
+        $this->call('POST', 'csv-import', [ ], [ ],
+            [ 'test' => $csv, 'multiple_word' => $csv, 'error_generating' => $csv ]);
+
+        $errors = \Session::get('errors')->getBag('default')->all();
+        $this->assertSessionHas('flash_message', 'Tests Imported. Multiple Words Imported.');
+        $this->assertContains("Error Generating not imported: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'field_not_existing' in 'field list'", $errors);
     }
 
 
