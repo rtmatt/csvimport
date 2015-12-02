@@ -1,8 +1,9 @@
-## TODO
-- [ ] Rollback imports upon error with importer
-- [ ] Report events where unique keys are repeated
-- [ ] Add automatic photo upload support
 
+
+## ISSUES
+- [ ] No Native photo upload support
+- [ ] When unique keys are duplicated in a csv, first entry is just deleted in favor of second.
+ - [ ] Currenty if there are errors in postSqlUpdate method, they are not handled.
 
 
 # csvimport
