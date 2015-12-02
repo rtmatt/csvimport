@@ -1,5 +1,6 @@
 
-Touch
+[![Build Status](https://travis-ci.org/rtmatt/csvimport.svg?branch=master)](https://travis-ci.org/rtmatt/csvimport) 
+[![Latest Stable Version](https://poser.pugx.org/rtmatt/csvimport/v/stable)](https://packagist.org/packages/rtmatt/csvimport) [![Total Downloads](https://poser.pugx.org/rtmatt/csvimport/downloads)](https://packagist.org/packages/rtmatt/csvimport) [![Latest Unstable Version](https://poser.pugx.org/rtmatt/csvimport/v/unstable)](https://packagist.org/packages/rtmatt/csvimport) [![License](https://poser.pugx.org/rtmatt/csvimport/license)](https://packagist.org/packages/rtmatt/csvimport)
 ## ISSUES
 - [ ] No Native photo upload support
 - [ ] When unique keys are duplicated in a csv, first entry is just deleted in favor of second.
