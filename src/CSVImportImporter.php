@@ -2,6 +2,8 @@
 
 namespace RTMatt\CSVImport;
 
+use RTMatt\CSVImport\Exceptions\CSVIncompleteImporterException;
+
 abstract class CSVImportImporter
 {
 
@@ -27,7 +29,7 @@ abstract class CSVImportImporter
             $this->resource_name = $this->setResourceName();
             $this->table_name    = $this->setTableName();
             $this->field_string  = $this->setFieldString();
-        } catch (\RTMatt\CSVImport\Exceptions\CSVIncompleteImporterException $e) {
+        } catch (CSVIncompleteImporterException $e) {
             $this->succeeded = false;
             $this->errors[]  = $e->getMessage();
         }
