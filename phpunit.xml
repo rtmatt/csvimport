@@ -9,15 +9,15 @@
          stopOnFailure="false"
          syntaxCheck="false">
     <testsuites>
-        <testsuite name="Package Test Suite">
-            <directory>./tests/</directory>
-        </testsuite>
-        <testsuite name="Controller">
-            <file>./tests/CSVImportControllerTest.php</file>
-        </testsuite>
-        <testsuite name="Importer">
-            <file>./tests/CSVImporterTest.php</file>
-        </testsuite>
+        <!--<testsuite name="Package Test Suite">-->
+            <!--<directory>./tests/</directory>-->
+        <!--</testsuite>-->
+        <!--<testsuite name="Controller">-->
+            <!--<file>./tests/CSVImportControllerTest.php</file>-->
+        <!--</testsuite>-->
+        <!--<testsuite name="Importer">-->
+            <!--<file>./tests/CSVImporterTest.php</file>-->
+        <!--</testsuite>-->
         <testsuite name="Command">
             <file>./tests/CSVCreateImporterTest.php</file>
         </testsuite>
