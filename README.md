@@ -229,7 +229,5 @@ protected function postSQLImport()
 ```
 
 
-# THAT'S IT.
-## Updates are coming soon.  
 
 
