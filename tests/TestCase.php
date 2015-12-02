@@ -70,6 +70,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'prefix'    => '',
             'strict'    => false,
         ]);
+        \Config::set('csvimport.sql_directory', realpath(__DIR__.'/sql_store'));
     }
 
 

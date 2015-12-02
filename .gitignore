@@ -8,3 +8,6 @@ spec/testImportDirectory/*
 
 tests/CommandImporters/*
 !tests/CommandImporters/.gitkeep
+
+tests/sql_store/*
+!tests/sql_store/.gitkeep
