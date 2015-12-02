@@ -78,12 +78,20 @@ class CSVImportControllerTest extends TestCase
     }
 
 
-    /** @test */
+    /** @test
+     */
     public function it_provides_inputs_for_found_importers()
     {
         \Config::set('csvimport.importer_directory', __DIR__ . '/Importers');
         $this->call('GET', 'csv-import');
-        $this->assertViewHas('fields', [ 'error_generating', 'multiple_word', 'test' ]);
+        $this->assertViewHas('fields', [
+            'error_generating',
+            'incomplete_field',
+            'incomplete',
+            'incomplete_table',
+            'multiple_word',
+            'test'
+        ]);
     }
 
 
@@ -183,7 +191,7 @@ class CSVImportControllerTest extends TestCase
         $this->call('POST', 'csv-import', [ ], [ ], [ 'error_generating' => $csv ]);
 
         $errors = \Session::get('errors')->getBag('default')->all();
-        $this->assertContains("Error Generating not imported: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'field_not_existing' in 'field list'", $errors);
+        $this->assertContains("Error Generatings not imported: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'field_not_existing' in 'field list'", $errors);
     }
 
 
@@ -198,8 +206,40 @@ class CSVImportControllerTest extends TestCase
 
         $errors = \Session::get('errors')->getBag('default')->all();
         $this->assertSessionHas('flash_message', 'Tests Imported. Multiple Words Imported.');
-        $this->assertContains("Error Generating not imported: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'field_not_existing' in 'field list'", $errors);
+        $this->assertContains("Error Generatings not imported: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'field_not_existing' in 'field list'", $errors);
     }
+    
+    /** @test */
+    public function it_displays_unconfigured_importer_exceptions(){
+        \Config::set('csvimport.importer_namespace', '\\RTMatt\\CSVImport\\Tests\\Importers\\');
+        $csv = new \Symfony\Component\HttpFoundation\File\UploadedFile(__DIR__ . '/files/basic.csv', 'basic.csv', null,
+            null, null, true);
+        $this->call('POST', 'csv-import', [ ], [ ],
+            [ 'incomplete' => $csv]);
+        $errors = \Session::get('errors')->getBag('default')->all();
+        $this->assertContains("Incompletes not imported: setResourceName method needs to be implemented", $errors);
+    }
+
+    public function it_displays_unconfigured_importer_table_exceptions(){
+        \Config::set('csvimport.importer_namespace', '\\RTMatt\\CSVImport\\Tests\\Importers\\');
+        $csv = new \Symfony\Component\HttpFoundation\File\UploadedFile(__DIR__ . '/files/basic.csv', 'basic.csv', null,
+            null, null, true);
+        $this->call('POST', 'csv-import', [ ], [ ],
+            [ 'incomplete' => $csv]);
+        $errors = \Session::get('errors')->getBag('default')->all();
+        $this->assertContains("Incomplete not imported: setTableName method needs to be implemented", $errors);
+    }
+
+    public function it_displays_unconfigured_importer_field_exceptions(){
+        \Config::set('csvimport.importer_namespace', '\\RTMatt\\CSVImport\\Tests\\Importers\\');
+        $csv = new \Symfony\Component\HttpFoundation\File\UploadedFile(__DIR__ . '/files/basic.csv', 'basic.csv', null,
+            null, null, true);
+        $this->call('POST', 'csv-import', [ ], [ ],
+            [ 'incomplete_field' => $csv]);
+        $errors = \Session::get('errors')->getBag('default')->all();
+        $this->assertContains("Incomplete not imported: setFieldString method needs to be implemented", $errors);
+    }
+
 
 
     /**

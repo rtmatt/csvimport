@@ -22,42 +22,48 @@ abstract class CSVImportImporter
 
     function __construct($csv)
     {
-        $this->resource_name = $this->setResourceName();
-        $this->table_name    = $this->setTableName();
-        $this->field_string  = $this->setFieldString();
+        $this->errors = [ ];
+        try {
+            $this->resource_name = $this->setResourceName();
+            $this->table_name    = $this->setTableName();
+            $this->field_string  = $this->setFieldString();
+        } catch (\RTMatt\CSVImport\Exceptions\CSVIncompleteImporterException $e) {
+            $this->succeeded = false;
+            $this->errors[]  = $e->getMessage();
+        }
+
         $this->csv           = $csv;
         $this->sql_data_path = config('csvimport.sql_directory') . '/';
-        $this->succeeded = false;
-        $this->errors = [];
+
 
     }
 
 
     public function import()
     {
+        if ($this->succeeded !== false) {
 
-        try{
-            $this->processCSVFile();
+            try {
+                $this->processCSVFile();
 
-            $this->resetTable();
+                $this->resetTable();
 
-            $this->runImportCommand();
+                $this->runImportCommand();
 
-            $this->postSQLImport();
+                $this->postSQLImport();
 
-            $this->deleteSQLPathCSV();
-            $this->succeeded = true;
-        }catch(\Exception $e){
-            if($e instanceof \PDOException ){
-                $this->handleErrors($e);
+                $this->deleteSQLPathCSV();
+                $this->succeeded = true;
+            } catch (\Exception $e) {
+                if ($e instanceof \PDOException) {
+                    $this->handleErrors($e);
+                } else {
+                    throw $e;
+                }
             }
-            else{
-                throw $e;
-            }
+
+            $this->prepareMessage();
         }
-
-
-        $this->prepareMessage();
     }
 
 
@@ -65,6 +71,7 @@ abstract class CSVImportImporter
     {
         return $this->message;
     }
+
 
     protected function deleteSQLPathCSV()
     {
@@ -133,18 +140,20 @@ abstract class CSVImportImporter
 
     public function fails()
     {
-        return !$this->succeeds();
+        return ! $this->succeeds();
     }
 
 
     public function errors()
     {
-       $message = $this->getImporterName() . ' not imported:';
-        foreach($this->errors as $error){
-            $message.= ' '.$error;
+        $message = $this->getImporterName() . ' not imported:';
+        foreach ($this->errors as $error) {
+            $message .= ' ' . $error;
         }
+
         return $message;
     }
+
 
     abstract protected function setResourceName();
 
@@ -184,7 +193,13 @@ abstract class CSVImportImporter
      */
     protected function getImporterName()
     {
-        return ucwords(str_ireplace('_', ' ', $this->resource_name));
+
+        $class = new \ReflectionClass(get_class($this));
+        $name  = str_replace('Importer', '', $class->getShortName());
+        $name = snake_case($name);
+        $name = str_replace('_',' ',$name);
+        $name = ucwords($name);
+        return str_plural($name);
     }
 
 }
