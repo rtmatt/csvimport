@@ -40,7 +40,7 @@ class CSVImporterTest extends TestCase
             'basic.csv', null, null, null, true);
         $csv2  =  new \Symfony\Component\HttpFoundation\File\UploadedFile(__DIR__ . '/files/basic2.csv',
             'basic2.csv', null, null, null, true);
-        $importer       = new ConcreteCSVImportImport($csv);
+        $importer       = new ConcreteCSVImportImporter($csv);
         $this->importer = $importer;
         $this->csv      = $csv;
         $this->csv2 = $csv2;
@@ -95,7 +95,7 @@ class CSVImporterTest extends TestCase
     {
         $message = $this->importer->import();
         if($this->importer->succeeds()){
-            $this->assertEquals('Tests Imported.', $this->importer->message());
+            $this->assertEquals('Concrete C S V Imports Imported.', $this->importer->message());
         }
     }
 
@@ -115,7 +115,7 @@ class CSVImporterTest extends TestCase
     /** @test */
     public function it_can_have_overridden_import_command()
     {
-        $importer = new ConcreteCSVImportOverrideImport($this->csv);
+        $importer = new ConcreteCSVImportOverrideImporter($this->csv);
         \DB::table('tests')->delete();
         $importer->import();
         $record = \DB::table('tests')->first();
@@ -126,7 +126,7 @@ class CSVImporterTest extends TestCase
 
     ///** @test */
     //public function it_resets_db_state_upon_error(){
-    //    $importer = new ConcreteCSVImportOverrideImport($this->csv);
+    //    $importer = new ConcreteCSVImportOverrideImporter($this->csv);
     //    \DB::table('tests')->delete();
     //    $importer->import();
     //    $count = \DB::table('tests')->count();
@@ -141,10 +141,10 @@ class CSVImporterTest extends TestCase
 
     /** @test */
     public function it_has_state_and_message_on_success(){
-        $importer = new ConcreteCSVImportOverrideImport($this->csv);
+        $importer = new ConcreteCSVImportOverrideImporter($this->csv);
         $importer->import();
         $this->assertTrue($importer->succeeds());
-        $this->assertEquals($importer->message(),'Tests Imported.');
+        $this->assertEquals($importer->message(),'Concrete C S V Import Overrides Imported.');
     }
 
     /** @test */
@@ -157,7 +157,7 @@ class CSVImporterTest extends TestCase
     /** @test */
     public function it_returns_importer_name_plus_errors_upon_error(){
         $failure = $this->runFailingImporter();
-        $this->assertContains('Error Generating not imported:',$failure->errors());
+        $this->assertContains('Error Generatings not imported:',$failure->errors());
     }
 
 
@@ -176,7 +176,7 @@ class CSVImporterTest extends TestCase
 
 }
 
-class ConcreteCSVImportImport extends \RTMatt\CSVImport\CSVImportImporter
+class ConcreteCSVImportImporter extends \RTMatt\CSVImport\CSVImportImporter
 {
 
     protected function setResourceName()
@@ -241,7 +241,7 @@ class ConcreteCSVImportPostImport extends \RTMatt\CSVImport\CSVImportImporter
     }
 }
 
-class ConcreteCSVImportOverrideImport extends \RTMatt\CSVImport\CSVImportImporter
+class ConcreteCSVImportOverrideImporter extends \RTMatt\CSVImport\CSVImportImporter
 {
 
     protected function setResourceName()
