@@ -63,7 +63,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'driver'    => 'mysql',
             'host'      => 'localhost',
             'database'  => 'testing',
-            'username'  => 'root',
+            'username'  => 'travis',
             'password'  => '',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
