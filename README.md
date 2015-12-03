@@ -57,7 +57,7 @@ $ php artisan route:clear
 
 ``` bash 
 
-$ php artisan vendor:publish --provider="RTMatt\CSVImport\CSVImportServiceProvider"
+$ php artisan vendor:publish --provider="RTMatt\CSVImport\Providers\CSVImportServiceProvider"
 
 ```
 
