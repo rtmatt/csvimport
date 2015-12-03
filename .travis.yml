@@ -14,3 +14,10 @@ before_script:
 script:
   - vendor/bin/phpspec run
   - vendor/bin/phpunit
+
+notifications:
+  email:
+    recipients:
+      - matt@redtrainwebservices.com
+    on_success: never # default: change
+    on_failure: always # default: always
