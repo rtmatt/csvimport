@@ -108,7 +108,7 @@ For example,  you have the following in your importers directory:
 ```
 AffiliatesImporter.php
 UsersImporter.php
-UserPhotos.php
+UserPhotosImporter.php
 ```
 
 If you need the UserPhotosImporter to run before the AffiliatesImporter, you would define the `import_order` configuration array as follows:
