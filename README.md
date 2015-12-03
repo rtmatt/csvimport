@@ -111,7 +111,7 @@ UsersImporter.php
 UserPhotos.php
 ```
 
-If you need the UserPhotosImporter to run before the AffiliatesImporter, you would define the `import_order` config as follows:
+If you need the UserPhotosImporter to run before the AffiliatesImporter, you would define the `import_order` configuration array as follows:
 
 ``` php
 	'import_order'=>[
@@ -120,9 +120,9 @@ If you need the UserPhotosImporter to run before the AffiliatesImporter, you wou
 	],
 ```
 
-- 	key is snake_case name of your importer with 'Importer' removed
--	value is ascending order of operation
--	importers that don't require ordering will run after ordered importers.
+- 	Array key is snake_case name of your importer with 'Importer' removed
+-	Array value is ascending order of operation
+-	Importers that don't require ordering don't need to be included.  They will run after ordered importers have completed.
 
 ### Authentication
 If you want to require authentication to access the Importers, set the `auth` config to `true`
@@ -164,17 +164,17 @@ If you would like to store your importers anywhere other than `app/CSVImports`, 
 Make sure you also update the `importer_namespace` config to ensure proper Importer Loading.
 
 ``` php
-    'importer_directory'=>app_path('IWantMyImportersHereForReasons'),
-   'importer_namespace'=>"\\App\\IWantMyImportersHereForReasons\\",
+'importer_directory'=>app_path('IWantMyImportersHereForReasons'),
+'importer_namespace'=>"\\App\\IWantMyImportersHereForReasons\\",
 ```
 
 ### Custom Routes
-If you don't like the route /csv-imports and would like to define your own routes, you can do so by modifying your app's `routes.php` file with a controller route using the package's controller.
+If you don't like the route `/csv-imports` and would like to define your own routes, you can do so by modifying your app's `routes.php` file with a controller route using the package's controller.
  
  
- ``` php
- Route::controller([your preferred route here],'\RTMatt\CSVImport\CSVImportController');
- ```
+``` php
+	Route::controller([your preferred route here],'\RTMatt\CSVImport\CSVImportController');
+```
 You should also set the `custom_route` config to  `true` to ensure the default package routes are not registered.  
  
 
@@ -184,11 +184,11 @@ There are some predefined points at which you can extend the functionality of yo
 You can completely override the MySQL command run by the importer by defining this method:
 
 ``` php
-	protected function overrideImportCommand()
-   {
-		$statement = //Your sql statement 
-	   return $statement;
-   }
+protected function overrideImportCommand()
+{
+	$statement = "[...]";//Your sql statement 
+	return $statement;
+}
 ```
 
 Example: 
@@ -199,31 +199,31 @@ You are importing properties into your database.  The CSV you are working with h
 - The value data type is an integer, but the CSV contains '$xxx,xxx,xxx' string values. 
 
 ``` php
-	protected function overrideImportCommand()
-    {
-        return "load data infile '/data/properties.csv'  into table properties
-			   FIELDS TERMINATED BY ','
-			   optionally ENCLOSED BY '\"'
-			   ESCAPED BY '\"'
-			   LINES TERMINATED BY '\n'
-			   IGNORE 2 LINES
-			   (@name,city,state,@transaction_date,@property_type,description,proposition,solution,@value)
-			   set
-			   transaction_date = STR_TO_DATE(@transaction_date,'%c/%e/%Y'),
-			   property_type_id = (Select id from property_types where name = Replace(@property_type,'\r','')),
-			   value = cast((Replace(Replace(@value,'$',''),',','')) as unsigned),
-			   name=Replace(@name,'\r','')
-			   ;";
-    }
+protected function overrideImportCommand()
+{
+	return "load data infile '/data/properties.csv'  into table properties
+		   FIELDS TERMINATED BY ','
+		   optionally ENCLOSED BY '\"'
+		   ESCAPED BY '\"'
+		   LINES TERMINATED BY '\n'
+		   IGNORE 2 LINES
+		   (@name,city,state,@transaction_date,@property_type,description,proposition,solution,@value)
+		   set
+		   transaction_date = STR_TO_DATE(@transaction_date,'%c/%e/%Y'),
+		   property_type_id = (Select id from property_types where name = Replace(@property_type,'\r','')),
+		   value = cast((Replace(Replace(@value,'$',''),',','')) as unsigned),
+		   name=Replace(@name,'\r','')
+		   ;";
+}
 ```
 
 ### Post-Import Logic
 Sometimes you need to run some logic after the sql statement has been executed. You do this by adding the following method to your importer:
 ``` php
 protected function postSQLImport()
-    {
-        // post import logic here
-    }
+{
+	// post import logic here
+}
 ```
 
 Example: 
@@ -232,13 +232,13 @@ Example:
 
 ``` php
 protected function postSQLImport()
-    {
-        $users = \App\User::all();
-        foreach($users as $user){
-        	$user->full_name = $user->first_name.' '.$user->last_name;
-		 	$user->save;
-        }
-    }
+{
+	$users = \App\User::all();
+	foreach($users as $user){
+		$user->full_name = $user->first_name.' '.$user->last_name;
+		$user->save;
+	}
+}
 ```
 
 ## Troubleshooting
