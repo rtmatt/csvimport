@@ -95,7 +95,7 @@ class CSVImportController extends Controller
         if ($user->can_import()) {
             return;
         }
-        abort(401, 'Unauthorized action.');
+        abort(403, 'Forbidden.');
     }
 
 
