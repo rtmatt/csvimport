@@ -49,8 +49,10 @@ Create an importer.  The following will create the importer stub  `app/CSVImport
 ``` bash
 $ php artisan csvimport:make Users
 ```
+This will create the importer stub  `app/CSVImports/UsersImporter.php`
+
 #### Step 2 - Configure Importer
-Configure importer stub.  You will need to define the following methods in your stub.
+Configure importer stub.  You will need to define the following methods.
   
   
 ``` php
@@ -85,7 +87,7 @@ Navigate to `/csv-imports`.  You should see an input that corresponds with the i
 #### Step 4 - Have a drink
 You earned it.
 
-### Configuration options
+## Configuration options
 During installation, the package will create a config file `config/csvimport.php` with the following options
 
 ``` php
@@ -98,7 +100,7 @@ During installation, the package will create a config file `config/csvimport.php
 	'custom_route'=>false //custom route for Import manager
 ```
 
-#### Import Order
+### Import Order
 If you have importers that need to run in a certain order, set this configuration option.
 
 For example,  you have the following in your importers directory:
@@ -122,7 +124,7 @@ If you need the UserPhotosImporter to run before the AffiliatesImporter, you wou
 -	value is ascending order of operation
 -	importers that don't require ordering will run after ordered importers.
 
-#### Authentication
+### Authentication
 If you want to require authentication to access the Importers, set the `auth` config to `true`
 
 In order to use authentication, you will need to add the following to your User model:
@@ -138,7 +140,7 @@ In order to use authentication, you will need to add the following to your User 
 - When an unauthenticated user tries to access the import area, a Unauthorized HttpException will be thrown.
 - When a authenticated user for which the can_import method returns false attempts access, a Forbidden HttpException will be thrown.
 
-#### SQL Directory
+### SQL Directory
 You can configure the directory to which the importer writes and reads files from.  This directory needs to be writable by the server and readable by the mysql user.  If you override this, use an absolute path.
 
 
@@ -146,7 +148,7 @@ You can configure the directory to which the importer writes and reads files fro
 'sql_directory'=>'/home/users/jondoe/sql_store',
 ```
 
-#### Override Views
+### Override Views
 If you have an admin layout that you would like the importer to load within, simply change the `override_layout_view` config to a string representing how you would load the view in a controller:
 
 
@@ -156,7 +158,7 @@ If you have an admin layout that you would like the importer to load within, sim
 
 The layout will load through the package's controller. If you have layout variables or logic that are not handled properly, you will likely encounter errors.
 
-#### Override Importer Directory
+### Override Importer Directory
 If you would like to store your importers anywhere other than `app/CSVImports`, you can do so by changing the `importer_directory` config.
 
 Make sure you also update the `importer_namespace` config to ensure proper Importer Loading.
@@ -166,7 +168,7 @@ Make sure you also update the `importer_namespace` config to ensure proper Impor
    'importer_namespace'=>"\\App\\IWantMyImportersHereForReasons\\",
 ```
 
-#### Custom Routes
+### Custom Routes
 If you don't like the route /csv-imports and would like to define your own routes, you can do so by modifying your app's `routes.php` file with a controller route using the package's controller.
  
  
@@ -176,9 +178,9 @@ If you don't like the route /csv-imports and would like to define your own route
 You should also set the `custom_route` config to  `true` to ensure the default package routes are not registered.  
  
 
-### Advanced Usage
+## Advanced Usage
 There are some predefined points at which you can extend the functionality of your importers. 
-#### Override Import Command
+### Override Import Command
 You can completely override the MySQL command run by the importer by defining this method:
 
 ``` php
@@ -215,7 +217,7 @@ You are importing properties into your database.  The CSV you are working with h
     }
 ```
 
-#### Post-Import Logic
+### Post-Import Logic
 Sometimes you need to run some logic after the sql statement has been executed. You do this by adding the following method to your importer:
 ``` php
 protected function postSQLImport()
