@@ -21,3 +21,6 @@ notifications:
       - matt@redtrainwebservices.com
     on_success: never # default: change
     on_failure: always # default: always
+
+notifications:
+  hipchat: 357471d5320e803e34da40eee57718@1580783
